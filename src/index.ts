@@ -2,7 +2,7 @@ import http from 'http'
 import { errorHandler, resHandler } from './handler'
 import { errorMap, requestMap } from './constant'
 import { requestCondition } from './utils'
-import { v4 as uuidV4 } from 'uuid'
+import { v4 as uuidV4, validate as uuidValidate } from 'uuid'
 import { TRequestListener, TTodoList } from './type'
 
 const todos: TTodoList = []
@@ -42,6 +42,11 @@ const requestListener: TRequestListener = (req, res) => {
   } else if (condition === requestMap.delete) {
     try {
       const id = (req.url || '').split('/').pop()
+
+      if (!uuidValidate(id)) {
+        throw Error(errorMap.idNotExisted.message)
+      }
+
       const idx = todos.findIndex((todo) => todo.id === id)
       if (idx !== -1) {
         todos.splice(idx, 1)
@@ -62,6 +67,11 @@ const requestListener: TRequestListener = (req, res) => {
         }
 
         const id = (req.url || '').split('/').pop()
+
+        if (!uuidValidate(id)) {
+          throw Error(errorMap.idNotExisted.message)
+        }
+
         const idx = todos.findIndex((todo) => todo.id === id)
 
         if (idx === -1) {

@@ -17,14 +17,14 @@ export const resHandler = ({ res, statusCode, content }: TResHandler) => {
 }
 
 export const errorHandler = ({ res, error }: TErrorHandler) => {
-  const { inValidJSON, withoutTitle, notFound, idNotExisted } = errorMap
+  const { invalidJSON, withoutTitle, notFound, idNotExisted } = errorMap
   const { message } = error
 
   let resMessage = ''
   let errorCode = ErrorCode.badRequest
 
-  if (message === inValidJSON.message) {
-    resMessage = inValidJSON.resMessage
+  if (message === invalidJSON.message) {
+    resMessage = invalidJSON.resMessage
   } else if (message === withoutTitle.message) {
     resMessage = withoutTitle.resMessage
   } else if (message === notFound.message) {

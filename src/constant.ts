@@ -7,7 +7,7 @@ export const headers = {
 }
 
 export const errorMap = {
-  inValidJSON: {
+  invalidJSON: {
     message: 'Unexpected end of JSON input',
     resMessage: '格式錯誤',
   },

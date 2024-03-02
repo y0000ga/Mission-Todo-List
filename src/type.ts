@@ -27,3 +27,11 @@ export type TRequestListener = http.RequestListener<
   typeof http.IncomingMessage,
   typeof http.ServerResponse
 >
+
+export enum TMethod {
+  GET = 'GET',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+  POST = 'POST',
+  OPTIONS = 'OPTIONS',
+}
