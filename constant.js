@@ -34,8 +34,11 @@ const requestMap = {
   edit:'edit'
 }
 
+const localPort = 3005
+
 module.exports = {
   headers,
   errorMap,
   requestMap,
+  localPort,
 }

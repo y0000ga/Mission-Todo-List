@@ -1,7 +1,8 @@
 const http = require('http')
 const { v4: uuidV4 } = require('uuid')
 const errorHandler = require('./errorHandler')
-const { headers, errorMap, requestMap } = require('./constant')
+const resHandler = require('./resHandler')
+const { errorMap, requestMap, localPort } = require('./constant')
 const { requestCondition } = require('./utils')
 
 /**
@@ -23,14 +24,7 @@ const requestListener = (req, res) => {
   const condition = requestCondition(req)
 
   if (condition === requestMap.getAll) {
-    res.writeHeader(200, headers)
-    res.write(
-      JSON.stringify({
-        status: 'success',
-        data: todos,
-      })
-    )
-    res.end()
+    resHandler(res, 200, todos)
   } else if (condition === requestMap.add) {
     req.on('end', () => {
       try {
@@ -41,14 +35,7 @@ const requestListener = (req, res) => {
             id: uuidV4(),
           }
           todos.push(todo)
-          res.writeHeader(200, headers)
-          res.write(
-            JSON.stringify({
-              status: 'success',
-              data: todo,
-            })
-          )
-          res.end()
+          resHandler(res, 200, todo)
         } else {
           throw Error(errorMap.withoutTitle.message)
         }
@@ -57,29 +44,15 @@ const requestListener = (req, res) => {
       }
     })
   } else if (condition === requestMap.deleteAll) {
-    res.writeHeader(200, headers)
     todos.length = 0
-    res.write(
-      JSON.stringify({
-        status: 'success',
-        data: todos,
-      })
-    )
-    res.end()
+    resHandler(res, 200, todos)
   } else if (condition === requestMap.delete) {
     try {
       const id = req.url.split('/').pop()
       const idx = todos.findIndex((todo) => todo.id === id)
       if (idx !== -1) {
         todos.splice(idx, 1)
-        res.writeHeader(200, headers)
-        res.write(
-          JSON.stringify({
-            status: 'success',
-            data: todos,
-          })
-        )
-        res.end()
+        resHandler(res, 200, todos)
       } else {
         throw Error(errorMap.idNotExisted.message)
       }
@@ -108,21 +81,14 @@ const requestListener = (req, res) => {
           title,
           id,
         }
-        res.writeHeader(200, headers)
-        res.write(
-          JSON.stringify({
-            status: 'success',
-            data: todo,
-          })
-        )
-        res.end()
+
+        resHandler(res, 200, todo)
       } catch (error) {
         errorHandler(res, error)
       }
     })
   } else if (condition === requestMap.option) {
-    res.writeHeader(200, headers)
-    res.end()
+    resHandler(res, 200)
   } else {
     errorHandler(res, Error(errorMap.notFound.message))
   }
@@ -130,4 +96,4 @@ const requestListener = (req, res) => {
 
 const server = http.createServer(requestListener)
 
-server.listen(process.env.PORT || 3005)
+server.listen(process.env.PORT || localPort)

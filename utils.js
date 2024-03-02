@@ -6,31 +6,26 @@ const { requestMap } = require('./constant')
  * @return {requestMap[keyof requestMap]}
  */
 const requestCondition = (req) => {
-  if (req.url === '/todos' && req.method === 'GET') {
-    return requestMap.getAll
+  if (req.url === '/todos') {
+    if (req.method === 'GET') {
+      return requestMap.getAll
+    } else if (req.method === 'POST') {
+      return requestMap.add
+    } else if (req.method === 'DELETE') {
+      return requestMap.deleteAll
+    }
   }
-  if (req.url === '/todos' && req.method === 'POST') {
-    return requestMap.add
+
+  if (req.url.startsWith('/todos/') && req.url.split('/').length === 3) {
+    if (req.method === 'DELETE') {
+      return requestMap.delete
+    } else if (req.method === 'PATCH') {
+      return requestMap.edit
+    }
   }
-  if (req.url === '/todos' && req.method === 'DELETE') {
-    return requestMap.deleteAll
-  }
-  if (
-    req.url.startsWith('/todos/') &&
-    req.url.split('/').length === 3 &&
-    req.method === 'DELETE'
-  ) {
-    return requestMap.delete
-  }
+
   if (req.method === 'OPTION') {
     return requestMap.option
-  }
-  if (
-    req.method === 'PATCH' &&
-    req.url.startsWith('/todos/') &&
-    req.url.split('/').length === 3
-  ) {
-    return requestMap.edit
   }
 }
 
