@@ -1,14 +1,8 @@
-const { headers } = require('./constant')
-const http = require('http')
+import { headers, errorMap } from './constant'
+import { ErrorCode, TErrorHandler, TResHandler } from './type'
 
-/**
- * @description handler in 處理 response 的 Module
- * @param {typeof http.IncomingMessage} res
- * @param {number} statusCode
- * @param {unknown} content
- */
-const resHandler = (res, statusCode, content) => {
-  res.writeHeader(statusCode, headers)
+export const resHandler = ({ res, statusCode, content }: TResHandler) => {
+  res.writeHead(statusCode, headers)
   if (!!content) {
     const detailContent =
       statusCode === 200
@@ -22,17 +16,12 @@ const resHandler = (res, statusCode, content) => {
   res.end()
 }
 
-/**
- * @description handler in 專門處理錯誤的 Module
- * @param {typeof http.IncomingMessage} res
- * @param {Error} error
- */
-const errorHandler = (res, error) => {
+export const errorHandler = ({ res, error }: TErrorHandler) => {
   const { inValidJSON, withoutTitle, notFound, idNotExisted } = errorMap
   const { message } = error
 
   let resMessage = ''
-  let errorCode = 400
+  let errorCode = ErrorCode.badRequest
 
   if (message === inValidJSON.message) {
     resMessage = inValidJSON.resMessage
@@ -47,10 +36,5 @@ const errorHandler = (res, error) => {
     resMessage = 'undefined Error'
   }
 
-  resHandler(res, errorCode, resMessage)
-}
-
-module.exports = {
-  errorHandler,
-  resHandler
+  resHandler({ res, statusCode: errorCode, content: resMessage })
 }

@@ -1,4 +1,4 @@
-const headers = {
+export const headers = {
   'Access-Control-Allow-Headers':
     'Content-Type, Authorization, Content-Length, X-Requested-With',
   'Access-Control-Allow-Origin': '*',
@@ -6,7 +6,7 @@ const headers = {
   'Content-Type': 'application/json',
 }
 
-const errorMap = {
+export const errorMap = {
   inValidJSON: {
     message: 'Unexpected end of JSON input',
     resMessage: '格式錯誤',
@@ -25,20 +25,11 @@ const errorMap = {
   },
 }
 
-const requestMap = {
+export const requestMap = {
   getAll: 'getAll',
   add: 'add',
   deleteAll: 'deleteAll',
   delete: 'delete',
   option: 'option',
   edit:'edit'
-}
-
-const localPort = 3005
-
-module.exports = {
-  headers,
-  errorMap,
-  requestMap,
-  localPort,
 }

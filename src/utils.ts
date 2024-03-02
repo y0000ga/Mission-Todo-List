@@ -1,11 +1,10 @@
-const http = require('http')
-const { requestMap } = require('./constant')
+import { requestMap } from './constant'
+import http from 'http'
 
-/**
- * @param {typeof http.IncomingMessage} req
- * @return {requestMap[keyof requestMap]}
- */
-const requestCondition = (req) => {
+export const requestCondition = (req: http.IncomingMessage) => {
+
+  if (!req.url) return
+
   if (req.url === '/todos') {
     if (req.method === 'GET') {
       return requestMap.getAll
@@ -27,8 +26,4 @@ const requestCondition = (req) => {
   if (req.method === 'OPTION') {
     return requestMap.option
   }
-}
-
-module.exports = {
-  requestCondition,
 }
